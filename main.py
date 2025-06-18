@@ -25,7 +25,6 @@ def get_schema_info(engine):
     return schema_info
 
 def get_query(query, schema_info):
-    # Convert schema info to a string representation
     schema_str = "\n".join([f"Table {table}: {', '.join(columns)}" 
                            for table, columns in schema_info.items()])
     
