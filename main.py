@@ -7,6 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 import sqlalchemy
 from sqlalchemy import create_engine, inspect
 from urllib.parse import quote_plus
+from sqlalchemy import text
 
 def get_db_connection(db_url):
     try:
@@ -36,6 +37,7 @@ def get_query(query, schema_info):
                     Convert the following question in English to a valid SQL Query: {query}
                     The SQL query should work with the provided schema.
                     No preamble, only valid SQL please.
+                    Quote all table/column names using double quotes if needed
                     Do not include ```sql or ``` in the output.
                     """)
     
@@ -45,7 +47,7 @@ def get_query(query, schema_info):
         model_name = model) 
     chain = prompt | llm | StrOutputParser()
     sqlquery = chain.invoke({"query": query, "schema": schema_str})
-    return sqlquery
+    return text(sqlquery)
 
 def get_data(engine, sql):
     try:
